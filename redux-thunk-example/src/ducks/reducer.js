@@ -1,27 +1,67 @@
-import axios from 'axios'
+import { combineReducers } from 'redux'
+import {
+    SELECT_SUBREDDIT, INVALIDATE_SUBREDDIT,
+    REQUEST_POSTS, RECEIVE_POSTS
+} from './actions'
 
-const initialState={
-    user:{},
-}
-
-const GET_USER_DATA = 'GET_USER_DATA';
-
-
-///////////////////////DUMMY DATA
-export function getUser(){
-    let userData = axios.get('/auth/user').then(res=>res.data);
-    return {
-        type: GET_USER_DATA,
-        payload: userData
-    }
-}
-
-///////////REDUCER 
-export default function reducer(state = initialState, action){
-    switch (action.type) {
-        case GET_USER_DATA + '_FULFILLED': 
-            return Object.assign({}, state, {user: action.payload});
+const selectedSubreddit = (state = 'reactjs', action) => {
+    switch(action.type) {
+        case SELECT_SUBREDDIT:
+            return action.subreddit
         default:
-            return state;
+            return state
     }
 }
+
+const initialPostsState = {
+    isFetching: false,
+    didInvalidate: false,
+    items: []
+}
+
+const posts = (state = initialPostsState, action) => {
+    switch (action.type) {
+        case INVALIDATE_SUBREDDIT:
+            return {
+                ...state,
+                didInvalidate: true
+            }
+        case REQUEST_POSTS:
+            return {
+                ...state,
+                isFetching: true,
+                didInvalidate: false
+            }
+        case RECEIVE_POSTS:
+            return {
+                ...state,
+                isFetching: false,
+                didInvalidate: false,
+                items: action.posts,
+                lastUpdated: action.receivedAt
+            }
+        default:
+            return state
+    }
+}
+
+const postsBySubreddit = (state = {}, action) => {
+    switch (action.type) {
+        case INVALIDATE_SUBREDDIT:
+        case RECEIVE_POSTS:
+        case REQUEST_POSTS:
+            return {
+                ...state,
+                [action.subreddit]: posts(state[action.subreddit], action)
+            }
+        default:
+            return state
+    }
+}
+
+const rootReducer = combineReducers({
+    postsBySubreddit,
+    selectedSubreddit
+})
+
+export default rootReducer
