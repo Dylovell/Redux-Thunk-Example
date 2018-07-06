@@ -4,14 +4,22 @@ import {
     REQUEST_POSTS, RECEIVE_POSTS
 } from './actions'
 
+<<<<<<< HEAD
 
 const selectedSubreddit = (state = 'reactjs', action) => {
+=======
+const selectedSubreddit = (state = initialSubreddits.subreddits, action) => {
+>>>>>>> 1b2536361e45369b4d5fe45df9e3fce057a262aa
     switch(action.type) {
         case SELECT_SUBREDDIT:
             return action.subreddit
         default:
             return state
     }
+}
+
+const initialSubreddits = {
+    subreddits: ['reactjs', 'utah']
 }
 
 const initialPostsState = {

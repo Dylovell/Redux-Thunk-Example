@@ -1,13 +1,20 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 
+import rootReducer from '../ducks/reducer'
+
 
 class Subreddit extends Component {
     constructor(){
         super()
         this.state = {
-            subredditInput : ''
+            subredditInput : '',
+            loading: false
         }
+    }
+
+    componentDidMount(){
+        this.props.selectedSubreddit
     }
 
     handleChange = (e) => {
@@ -15,11 +22,11 @@ class Subreddit extends Component {
     }
 
     handleSubmit = (e) =>{
-
-
+        this.props.selectedSubreddit
     }
 
     render() {
+<<<<<<< HEAD
         // let isLoading = this.props.posts.length === 0
         // let mappedSubreddits = this.props.subreddits.map((el,i)=>{
         //         return(
@@ -30,6 +37,19 @@ class Subreddit extends Component {
         //             >{el}</option>
         //         )
         //     }) 
+=======
+        console.log(this.props)
+        // let isLoading = this.props.posts.length === 0
+        let mappedSubreddits = this.props.subreddits.map((el,i)=>{
+                return(
+                    <option 
+                        value={this.props.selectedSubreddit[i]} 
+                        onChange={(e)=>{rootReducer.selectedSubreddit(e.target.value)}}
+                        key={i}
+                    >{el}</option>
+                )
+            }) 
+>>>>>>> 1b2536361e45369b4d5fe45df9e3fce057a262aa
         return (
             <div>
                 <h1>Subreddit's</h1>
@@ -41,10 +61,11 @@ class Subreddit extends Component {
                 </div>
                 <hr/>
 
-                <h3>Select a Sybreddit</h3>
+                <h3>Select a Subreddit</h3>
                 <select>
                     <option>something!</option>
-                    {/* <mappedSubreddits/> */}
+                    {mappedSubreddits}
+                    {this.props.posts}
                 </select>
                 
             </div>
@@ -53,9 +74,11 @@ class Subreddit extends Component {
 }
 
 function mapStateToProps(state){
+    console.log(state)
     return{
-        subreddits: state.subreddits
+        subreddits: state.selectedSubreddit,
+        posts: state.postsBySubreddit.items,
     }
 }
 
-export default connect(mapStateToProps)(Subreddit); 
+export default connect(mapStateToProps, rootReducer)(Subreddit); 
