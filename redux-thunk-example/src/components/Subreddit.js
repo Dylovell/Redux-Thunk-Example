@@ -20,7 +20,7 @@ class Subreddit extends Component {
     }
 
     render() {
-        let isLoading = this.props.posts.length === 0
+        // let isLoading = this.props.posts.length === 0
         // let mappedSubreddits = this.props.subreddits.map((el,i)=>{
         //         return(
         //             <option 
